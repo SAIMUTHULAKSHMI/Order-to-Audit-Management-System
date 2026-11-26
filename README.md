@@ -229,8 +229,8 @@ Use the following demo accounts to test the different roles.
 
 | Role | Username | Password |
 |---|---|---|
-| Admin | YOUR_ADMIN_USERNAME | YOUR_ADMIN_PASSWORD |
-| Sales | YOUR_SALES_USERNAME | YOUR_SALES_PASSWORD |
+| Admin | Admin | 123456789 |
+| Sales | zxy | 123456789 |
 
 **Note:** These are demonstration credentials provided for evaluation purposes only.
 
