@@ -1,0 +1,32 @@
+## Run It
+### Locally
+**Requirements:** Python 3.10 or above
+
+```bash
+# 1. Clone the repository
+https://github.com/SAIMUTHULAKSHMI/Order-to-Audit-Management-System.git
+
+# 2. Open the project folder
+cd Order-to-Audit-System
+
+# 3. Create a virtual environment
+python -m venv venv
+
+# 4. Activate virtual environment (Windows)
+venv\Scripts\activate
+
+# 5. Install dependencies
+pip install -r requirements.txt
+
+# 6. Run the application
+streamlit run app.py
+```
+
+**Application URL:** http://localhost:8501
+
+### Test Logins
+
+| Username | Password | Access |
+|---|---|---|
+| Admin | 123456789 | Complete system management |
+| zxy | 123456789 | Customer orders and sales |
