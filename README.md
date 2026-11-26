@@ -187,52 +187,40 @@ Potential future improvements include:
 -   Stronger audit controls and transaction traceability.
 -   Deployment for authorized users to access the application remotely.
 
-##  Live Application / Run Instructions
+## Run It
 
-### Option 1: Run Locally
+### Locally
 
-**Requirements:** Python 3.10 or above.
-
-1. Clone the repository:
+**Requirements:** Python 3.10 or above
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_LINK
-```
+# 1. Clone the repository
+git clone YOUR_GITHUB_REPOSITORY_URL
 
-2. Open the project folder:
-
-```bash
+# 2. Open the project folder
 cd Order-to-Audit-System
-```
 
-3. Install the required packages:
+# 3. Create a virtual environment
+python -m venv venv
 
-```bash
+# 4. Activate virtual environment (Windows)
+venv\Scripts\activate
+
+# 5. Install dependencies
 pip install -r requirements.txt
-```
 
-4. Start the application:
-
-```bash
+# 6. Run the application
 streamlit run app.py
 ```
 
-5. Open the URL displayed in the terminal (usually http://localhost:8501).
+**Application URL:** http://localhost:8501
 
-### Option 2: Live Application
+### Test Logins
 
-**Live Website:** [Add your deployed Streamlit URL here]
-
-### Test Login Credentials
-
-Use the following demo accounts to test the different roles.
-
-| Role | Username | Password |
+| Username | Password | Access |
 |---|---|---|
-| Admin | Admin | 123456789 |
-| Sales | zxy | 123456789 |
-
-**Note:** These are demonstration credentials provided for evaluation purposes only.
+| Admin | 123456789 | Complete system management |
+| zxy | 123456789 | Customer orders and sales |
 
 ## Author
 
