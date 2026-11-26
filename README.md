@@ -187,6 +187,53 @@ Potential future improvements include:
 -   Stronger audit controls and transaction traceability.
 -   Deployment for authorized users to access the application remotely.
 
+##  Live Application / Run Instructions
+
+### Option 1: Run Locally
+
+**Requirements:** Python 3.10 or above.
+
+1. Clone the repository:
+
+```bash
+git clone YOUR_GITHUB_REPOSITORY_LINK
+```
+
+2. Open the project folder:
+
+```bash
+cd Order-to-Audit-System
+```
+
+3. Install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Start the application:
+
+```bash
+streamlit run app.py
+```
+
+5. Open the URL displayed in the terminal (usually http://localhost:8501).
+
+### Option 2: Live Application
+
+**Live Website:** [Add your deployed Streamlit URL here]
+
+### Test Login Credentials
+
+Use the following demo accounts to test the different roles.
+
+| Role | Username | Password |
+|---|---|---|
+| Admin | YOUR_ADMIN_USERNAME | YOUR_ADMIN_PASSWORD |
+| Sales | YOUR_SALES_USERNAME | YOUR_SALES_PASSWORD |
+
+**Note:** These are demonstration credentials provided for evaluation purposes only.
+
 ## Author
 
 **Sai Muthu Lakshmi**\
