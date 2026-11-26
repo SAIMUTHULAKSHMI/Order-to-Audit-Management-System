@@ -195,7 +195,7 @@ Potential future improvements include:
 
 ```bash
 # 1. Clone the repository
-git clone YOUR_GITHUB_REPOSITORY_URL
+https://github.com/SAIMUTHULAKSHMI/Order-to-Audit-Management-System.git
 
 # 2. Open the project folder
 cd Order-to-Audit-System
