@@ -1005,8 +1005,8 @@ elif page == "Production":
     if not products.empty:
 
         product = st.selectbox("Product", products["name"])
-        expected = st.number_input("Expected Output (kg)", min_value=1, step=1)
-        actual = st.number_input("Actual Output (kg)", min_value=0, step=1)
+        expected = st.number_input("Expected Output (packets)", min_value=1, value=200, step=1)
+        actual = st.number_input("Actual Output (packets)", min_value=0, value=188, step=1)
 
         wastage = max(expected - actual, 0)
         variance = ((actual - expected) / expected) * 100
@@ -1019,13 +1019,14 @@ elif page == "Production":
             (product,)
         )
 
+        
         stock_available = True
 
         if not bom.empty:
 
             for _, item in bom.iterrows():
 
-                required = item["quantity_per_unit"] * actual
+                required = item["quantity_per_unit"] * actual / expected
 
                 stock = read_data(
                     "SELECT quantity, unit FROM raw_materials WHERE name=?",
@@ -1037,7 +1038,7 @@ elif page == "Production":
                     stock_available = False
 
                 else:
-                    available = stock.iloc[0]["quantity"]
+                    available = float(stock.iloc[0]["quantity"])
                     unit = stock.iloc[0]["unit"]
 
                     st.write(
@@ -1050,13 +1051,26 @@ elif page == "Production":
                         st.error(f"Insufficient stock: {item['material']}")
                         stock_available = False
                     else:
-                        with st.container(key=f"production_stock_status_{item['material'].replace(' ', '_')}"):
-                            st.success(f"Sufficient stock: {item['material']}")
+                        st.success(f"Sufficient stock: {item['material']}")
+        # Production expenses
+        st.subheader("Production Expenses")
+        st.warning("TEST: Production Expenses section is running")
 
-        else:
-            st.warning("No BOM defined for this product.")
-            stock_available = False
+        labour_cost = st.number_input(
+            "Labour Cost (₹)", min_value=0.0, value=1200.0
+        )
 
+        gas_cost = st.number_input(
+            "Gas Cost (₹)", min_value=0.0, value=600.0
+        )
+
+        power_cost = st.number_input(
+            "Power Cost (₹)", min_value=0.0, value=0.0
+        )
+
+        total_overhead = labour_cost + gas_cost + power_cost
+
+        st.metric("Total Production Overhead", f"₹{total_overhead:.2f}")
         # Production performance
         st.subheader("Production Performance")
 
@@ -1064,39 +1078,58 @@ elif page == "Production":
         st.metric("Production Variance", f"{variance:.2f}%")
 
         # Save production record
-        if st.button("Save Production Record", disabled=not stock_available or actual == 0):
+        if st.button(
+            "Save Production Record",
+            disabled=(not stock_available or actual <= 0 or expected <= 0 or bom.empty)
+        ):
             conn = get_connection()
 
             try:
                 conn.execute("BEGIN")
 
+                # Verify stock before deduction
                 for _, item in bom.iterrows():
-                    required = item["quantity_per_unit"] * actual
+
+                    required = item["quantity_per_unit"] * actual / expected
 
                     result = conn.execute(
                         "SELECT quantity FROM raw_materials WHERE name=?",
                         (item["material"],)
                     ).fetchone()
 
-                    if result is None or result[0] < required:
+                    if result is None or float(result[0]) < required:
                         raise ValueError(
                             f"Insufficient stock for {item['material']}"
                         )
 
+                # Deduct raw material stock
                 for _, item in bom.iterrows():
-                    required = item["quantity_per_unit"] * actual
+
+                    required = item["quantity_per_unit"] * actual / expected
 
                     conn.execute(
-                        "UPDATE raw_materials SET quantity = quantity - ? WHERE name = ?",
+                        """
+                        UPDATE raw_materials
+                        SET quantity = quantity - ?
+                        WHERE name = ?
+                        """,
                         (required, item["material"])
                     )
 
+                # Save production record
                 conn.execute(
-                    """INSERT INTO production
-                    (product, expected_output, actual_output, wastage, variance)
-                    VALUES (?, ?, ?, ?, ?)""",
-                    (product, expected, actual, wastage, variance)
+                    """
+                    INSERT INTO production
+                    (product, expected_output, actual_output, wastage, variance,
+                     labour_cost, gas_cost, power_cost, total_overhead)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        product, expected, actual, wastage, variance,
+                        labour_cost, gas_cost, power_cost, total_overhead
+                    )
                 )
+                # Update finished goods stock
                 conn.execute(
                     """
                     UPDATE products
@@ -1105,6 +1138,7 @@ elif page == "Production":
                     """,
                     (actual, product)
                 )
+
                 conn.commit()
                 st.success("Production saved and inventory updated!")
 
@@ -1116,7 +1150,6 @@ elif page == "Production":
                 conn.close()
 
             st.rerun()
-
 
         # Production history
         st.subheader("Production History")
